@@ -9,6 +9,6 @@ A single-page OSRS-themed tracker for an Ironman mode where Combat Achievements 
 - Adventure log (Rune Journal) that records every completion and unlock decision.
 - Modal to add custom CA points so you can mirror an in-game profile.
 - Toggleable rails and tabs to keep tasks, unlocks, and the journal separated yet cohesive.
-
-## Running locally
-Open `index.html` in your browser. No build tools are required.
+- Unlock costs that mirror the requested rules: skills start at 1 point and scale by +2 for each purchase; quests cost their quest point reward; shops cost 1 point each.
+- Adventure log (Rune Journal) that records every completion and unlock decision.
+- Modal to add custom CA points so you can mirror an in-game profile.

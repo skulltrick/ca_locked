@@ -118,6 +118,67 @@
         </div>
       </section>
     </div>
+  <main class="grid">
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Combat Achievements</p>
+          <h2>Task Board</h2>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="showCompleted" />
+          <span class="slider"></span>
+          <span class="switch__label">Show completed</span>
+        </label>
+      </div>
+      <div class="panel__body" id="caList"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Progression</p>
+          <h2>Unlock Skills</h2>
+        </div>
+        <div class="pill">Costs start at 1pt then +2 per unlock</div>
+      </div>
+      <div class="panel__body" id="skills"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Lore &amp; Travel</p>
+          <h2>Quest Unlocks</h2>
+        </div>
+        <div class="pill pill--blue">Cost = Quest Point reward</div>
+      </div>
+      <div class="panel__body" id="quests"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Supplies</p>
+          <h2>Shop Access</h2>
+        </div>
+        <div class="pill pill--green">1pt each</div>
+      </div>
+      <div class="panel__body" id="shops"></div>
+    </section>
+
+    <section class="panel panel--wide">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Adventure Log</p>
+          <h2>Rune Journal</h2>
+        </div>
+        <button class="button button--ghost" id="clearLog">Clear log</button>
+      </div>
+      <div class="panel__body">
+        <ul class="journal" id="journal"></ul>
+      </div>
+    </section>
   </main>
 
   <div class="modal" id="customPointsModal" aria-hidden="true">

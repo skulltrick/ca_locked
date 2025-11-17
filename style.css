@@ -247,6 +247,13 @@ p {
 .tab--active {
   background: linear-gradient(135deg, rgba(106, 183, 255, 0.18), rgba(230, 196, 114, 0.2));
   border: 1px solid rgba(255, 255, 255, 0.12);
+.grid {
+  max-width: 1280px;
+  margin: -2rem auto 3rem;
+  padding: 0 clamp(1.5rem, 3vw, 3rem);
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
 .panel {

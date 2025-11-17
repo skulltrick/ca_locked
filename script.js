@@ -102,6 +102,7 @@ function getAvailablePoints() {
 
 function getNextSkillCost() {
   return 1 + state.purchasedSkills;
+  return 1 + state.purchasedSkills * 2;
 }
 
 function renderSummary() {
@@ -428,4 +429,5 @@ showCompletedToggle.checked = true;
 renderAll();
 setActiveView("tasks");
 setActiveUnlock("skills");
+renderAll();
 logEvent("Your Ironman starts with Attack, Strength, Defence, Hitpoints, Prayer, and Slayer.");
