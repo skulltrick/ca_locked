@@ -87,6 +87,10 @@ const closeModalBtn = document.getElementById("closeModal");
 const customPointsForm = document.getElementById("customPointsForm");
 const customPointsValue = document.getElementById("customPointsValue");
 const clearLogBtn = document.getElementById("clearLog");
+const viewTabs = document.querySelectorAll("[data-view]");
+const views = document.querySelectorAll(".view");
+const unlockTabs = document.querySelectorAll("[data-unlock]");
+const unlockViews = document.querySelectorAll("[data-unlock-view]");
 
 function formatPoints(value) {
   return `${value} pt${value === 1 ? "" : "s"}`;
@@ -97,6 +101,7 @@ function getAvailablePoints() {
 }
 
 function getNextSkillCost() {
+  return 1 + state.purchasedSkills;
   return 1 + state.purchasedSkills * 2;
 }
 
@@ -120,6 +125,31 @@ function renderSummary() {
       <div class="stat__value">${state.caCompletions}</div>
     </div>
   `;
+}
+
+function setActiveView(viewName) {
+  viewTabs.forEach((tab) => {
+    const isActive = tab.dataset.view === viewName;
+    tab.classList.toggle("rail__item--active", isActive);
+  });
+
+  views.forEach((view) => {
+    const isActive = view.dataset.view === viewName;
+    view.classList.toggle("view--active", isActive);
+    view.classList.toggle("hidden", !isActive);
+  });
+}
+
+function setActiveUnlock(viewName) {
+  unlockTabs.forEach((tab) => {
+    const isActive = tab.dataset.unlock === viewName;
+    tab.classList.toggle("tab--active", isActive);
+  });
+
+  unlockViews.forEach((panel) => {
+    const isActive = panel.dataset.unlockView === viewName;
+    panel.classList.toggle("hidden", !isActive);
+  });
 }
 
 function renderTasks() {
@@ -379,6 +409,14 @@ clearLogBtn.addEventListener("click", () => {
   renderJournal();
 });
 
+viewTabs.forEach((tab) => {
+  tab.addEventListener("click", () => setActiveView(tab.dataset.view));
+});
+
+unlockTabs.forEach((tab) => {
+  tab.addEventListener("click", () => setActiveUnlock(tab.dataset.unlock));
+});
+
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && customPointsModal.getAttribute("aria-hidden") === "false") {
     closeModal();
@@ -387,5 +425,9 @@ window.addEventListener("keydown", (e) => {
 
 // Init
 state.showCompleted = true;
+showCompletedToggle.checked = true;
+renderAll();
+setActiveView("tasks");
+setActiveUnlock("skills");
 renderAll();
 logEvent("Your Ironman starts with Attack, Strength, Defence, Hitpoints, Prayer, and Slayer.");

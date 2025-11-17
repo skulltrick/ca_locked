@@ -24,6 +24,100 @@
     </div>
   </header>
 
+  <main class="shell">
+    <div class="nav rail" id="viewTabs">
+      <button class="rail__item rail__item--active" data-view="tasks">
+        <span class="rail__icon">🎯</span>
+        <span>Tasks</span>
+      </button>
+      <button class="rail__item" data-view="unlocks">
+        <span class="rail__icon">🗺️</span>
+        <span>Unlocks</span>
+      </button>
+      <button class="rail__item" data-view="journal">
+        <span class="rail__icon">📜</span>
+        <span>Journal</span>
+      </button>
+    </div>
+
+    <div class="views">
+      <section class="view view--active" data-view="tasks">
+        <div class="panel">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Combat Achievements</p>
+              <h2>Task Board</h2>
+            </div>
+            <div class="panel__actions">
+              <label class="switch">
+                <input type="checkbox" id="showCompleted" />
+                <span class="slider"></span>
+                <span class="switch__label">Show completed</span>
+              </label>
+            </div>
+          </div>
+          <div class="panel__body" id="caList"></div>
+        </div>
+      </section>
+
+      <section class="view" data-view="unlocks">
+        <div class="tablist" id="unlockTabs">
+          <button class="tab tab--active" data-unlock="skills">Skills</button>
+          <button class="tab" data-unlock="quests">Quests</button>
+          <button class="tab" data-unlock="shops">Shops</button>
+        </div>
+
+        <div class="panel" data-unlock-view="skills">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Progression</p>
+              <h2>Unlock Skills</h2>
+            </div>
+            <div class="pill">Costs start at 1pt then +1 per unlock</div>
+          </div>
+          <div class="panel__body" id="skills"></div>
+        </div>
+
+        <div class="panel hidden" data-unlock-view="quests">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Lore &amp; Travel</p>
+              <h2>Quest Unlocks</h2>
+            </div>
+            <div class="pill pill--blue">Cost = Quest Point reward</div>
+          </div>
+          <div class="panel__body" id="quests"></div>
+        </div>
+
+        <div class="panel hidden" data-unlock-view="shops">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Supplies</p>
+              <h2>Shop Access</h2>
+            </div>
+            <div class="pill pill--green">1pt each</div>
+          </div>
+          <div class="panel__body" id="shops"></div>
+        </div>
+      </section>
+
+      <section class="view" data-view="journal">
+        <div class="panel panel--wide">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Adventure Log</p>
+              <h2>Rune Journal</h2>
+            </div>
+            <div class="panel__actions">
+              <button class="button button--ghost" id="clearLog">Clear log</button>
+            </div>
+          </div>
+          <div class="panel__body">
+            <ul class="journal" id="journal"></ul>
+          </div>
+        </div>
+      </section>
+    </div>
   <main class="grid">
     <section class="panel">
       <div class="panel__header">
