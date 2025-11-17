@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Combat Achievement Ironlock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <p class="eyebrow">Ironman Variant</p>
+      <h1>Combat Achievement Ironlock</h1>
+      <p class="lede">Earn Combat Achievement points to unlock the world of Gielinor. Every completion fuels your Ironman progression into skills, quests, and shops.</p>
+      <div class="hero__stats" id="summary"></div>
+      <div class="hero__cta">
+        <button class="button button--primary" id="resetProgress">Reset Run</button>
+        <button class="button button--ghost" id="addCustomPoints">Add Custom CA Points</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Combat Achievements</p>
+          <h2>Task Board</h2>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="showCompleted" />
+          <span class="slider"></span>
+          <span class="switch__label">Show completed</span>
+        </label>
+      </div>
+      <div class="panel__body" id="caList"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Progression</p>
+          <h2>Unlock Skills</h2>
+        </div>
+        <div class="pill">Costs start at 1pt then +2 per unlock</div>
+      </div>
+      <div class="panel__body" id="skills"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Lore &amp; Travel</p>
+          <h2>Quest Unlocks</h2>
+        </div>
+        <div class="pill pill--blue">Cost = Quest Point reward</div>
+      </div>
+      <div class="panel__body" id="quests"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Supplies</p>
+          <h2>Shop Access</h2>
+        </div>
+        <div class="pill pill--green">1pt each</div>
+      </div>
+      <div class="panel__body" id="shops"></div>
+    </section>
+
+    <section class="panel panel--wide">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Adventure Log</p>
+          <h2>Rune Journal</h2>
+        </div>
+        <button class="button button--ghost" id="clearLog">Clear log</button>
+      </div>
+      <div class="panel__body">
+        <ul class="journal" id="journal"></ul>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="customPointsModal" aria-hidden="true">
+    <div class="modal__dialog">
+      <h3>Grant Custom Points</h3>
+      <p>Use this when you want to mirror an in-game task with your live Ironman. Add earned CA points to keep the run in sync.</p>
+      <form id="customPointsForm">
+        <label class="field">
+          <span>Points to add</span>
+          <input type="number" id="customPointsValue" min="1" value="5" required />
+        </label>
+        <div class="modal__actions">
+          <button type="button" class="button button--ghost" id="closeModal">Cancel</button>
+          <button type="submit" class="button button--primary">Add points</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
