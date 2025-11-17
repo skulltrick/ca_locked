@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Combat Achievement Ironlock HUD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="frame">
+    <header class="bar">
+      <div class="bar__brand">
+        <span class="orb">🛡️</span>
+        <div>
+          <p class="eyebrow">Ironman Variant</p>
+          <h1>Combat Achievement Ironlock</h1>
+        </div>
+      </div>
+      <div class="bar__summary" id="summary"></div>
+      <div class="bar__actions">
+        <button class="button button--ghost" id="addCustomPoints">+ CA Points</button>
+        <button class="button button--primary" id="resetProgress">Reset Run</button>
+      </div>
+    </header>
+
+    <main class="hud">
+      <section class="pane pane--tasks">
+        <div class="pane__head">
+          <div>
+            <p class="eyebrow">Combat Achievements</p>
+            <h2>Task Console</h2>
+            <p class="hint">Tap a card to cash in points and progress your Ironlock.</p>
+          </div>
+          <div class="toggles">
+            <label class="switch">
+              <input type="checkbox" id="showCompleted" />
+              <span class="slider"></span>
+              <span class="switch__label">Show completed</span>
+            </label>
+            <div class="segment" id="tierFilter">
+              <button class="segment__btn segment__btn--active" data-tier="all">All</button>
+              <button class="segment__btn" data-tier="easy">Easy</button>
+              <button class="segment__btn" data-tier="medium">Med</button>
+              <button class="segment__btn" data-tier="hard">Hard</button>
+              <button class="segment__btn" data-tier="elite">Elite</button>
+              <button class="segment__btn" data-tier="master">Master</button>
+            </div>
+          </div>
+        </div>
+        <div class="pane__body" id="caGrid"></div>
+      </section>
+
+      <section class="pane pane--unlocks">
+        <div class="pane__head">
+          <div>
+            <p class="eyebrow">Spend CA points</p>
+            <h2>Unlock Console</h2>
+            <p class="hint">Keep the world locked to your will—skills, quests, and shops await.</p>
+          </div>
+          <div class="segment" id="unlockTabs">
+            <button class="segment__btn segment__btn--active" data-unlock="skills">Skills</button>
+            <button class="segment__btn" data-unlock="quests">Quests</button>
+            <button class="segment__btn" data-unlock="shops">Shops</button>
+          </div>
+        </div>
+
+        <div class="quick-stats" id="unlockSummary"></div>
+
+        <div class="unlock-view" data-unlock-view="skills">
+          <div class="pane__subhead">
+            <h3>Skill lifts</h3>
+            <div class="pill">Costs start at 1pt and rise by +1 per skill</div>
+          </div>
+          <div class="grid" id="skills"></div>
+        </div>
+
+        <div class="unlock-view hidden" data-unlock-view="quests">
+          <div class="pane__subhead">
+            <h3>Quest gateways</h3>
+            <div class="pill">Cost mirrors their Quest Point reward</div>
+          </div>
+          <div class="grid" id="quests"></div>
+        </div>
+
+        <div class="unlock-view hidden" data-unlock-view="shops">
+          <div class="pane__subhead">
+            <h3>Shop access</h3>
+            <div class="pill">Each shop entry is 1pt to unlock</div>
+          </div>
+          <div class="grid" id="shops"></div>
+        </div>
+      </section>
+
+      <section class="pane pane--journal">
+        <div class="pane__head">
+          <div>
+            <p class="eyebrow">Run ledger</p>
+            <h2>Rune Journal</h2>
+            <p class="hint">Every click writes your Ironlock story.</p>
+          </div>
+          <div class="ledger">
+            <div class="ledger__stat">
+              <span class="ledger__label">Unlocked skills</span>
+              <span class="ledger__value" id="skillCount"></span>
+            </div>
+            <div class="ledger__stat">
+              <span class="ledger__label">Unlocked quests</span>
+              <span class="ledger__value" id="questCount"></span>
+            </div>
+            <div class="ledger__stat">
+              <span class="ledger__label">Unlocked shops</span>
+              <span class="ledger__value" id="shopCount"></span>
+            </div>
+          </div>
+        </div>
+        <div class="pane__body pane__body--journal">
+          <div class="log" id="journal"></div>
+          <div class="inline-actions">
+            <button class="button button--ghost" id="clearLog">Clear journal</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="customPointsModal" role="dialog" aria-modal="true">
+    <div class="modal__content">
+      <div class="modal__head">
+        <h3>Add Custom CA Points</h3>
+        <button class="icon-button" id="closeModal">✖</button>
+      </div>
+      <form id="customPointsForm" class="form">
+        <label for="customPointsValue">How many points?</label>
+        <input type="number" id="customPointsValue" name="customPointsValue" min="1" max="999" value="5" required />
+        <div class="form__actions">
+          <button type="submit" class="button button--primary">Add points</button>
+          <button type="button" class="button button--ghost" id="cancelModal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>
