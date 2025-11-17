@@ -76,6 +76,7 @@ const state = {
 
 const summaryEl = document.getElementById("summary");
 const caListEl = document.getElementById("caGrid");
+const caListEl = document.getElementById("caList");
 const skillsEl = document.getElementById("skills");
 const questsEl = document.getElementById("quests");
 const shopsEl = document.getElementById("shops");
@@ -100,6 +101,13 @@ const skillCountEl = document.getElementById("skillCount");
 const questCountEl = document.getElementById("questCount");
 const shopCountEl = document.getElementById("shopCount");
 const toastEl = document.getElementById("toast");
+const customPointsForm = document.getElementById("customPointsForm");
+const customPointsValue = document.getElementById("customPointsValue");
+const clearLogBtn = document.getElementById("clearLog");
+const viewTabs = document.querySelectorAll("[data-view]");
+const views = document.querySelectorAll(".view");
+const unlockTabs = document.querySelectorAll("[data-unlock]");
+const unlockViews = document.querySelectorAll("[data-unlock-view]");
 
 function formatPoints(value) {
   return `${value} pt${value === 1 ? "" : "s"}`;
@@ -121,6 +129,7 @@ function setActiveView(viewName) {
   views.forEach((panel) => {
     panel.classList.toggle("view--active", panel.dataset.view === viewName);
   });
+  return 1 + state.purchasedSkills * 2;
 }
 
 function renderSummary() {
@@ -149,6 +158,23 @@ function setActiveUnlock(viewName) {
   unlockTabs.forEach((tab) => {
     const isActive = tab.dataset.unlock === viewName;
     tab.classList.toggle("segment__btn--active", isActive);
+function setActiveView(viewName) {
+  viewTabs.forEach((tab) => {
+    const isActive = tab.dataset.view === viewName;
+    tab.classList.toggle("rail__item--active", isActive);
+  });
+
+  views.forEach((view) => {
+    const isActive = view.dataset.view === viewName;
+    view.classList.toggle("view--active", isActive);
+    view.classList.toggle("hidden", !isActive);
+  });
+}
+
+function setActiveUnlock(viewName) {
+  unlockTabs.forEach((tab) => {
+    const isActive = tab.dataset.unlock === viewName;
+    tab.classList.toggle("tab--active", isActive);
   });
 
   unlockViews.forEach((panel) => {
@@ -306,6 +332,113 @@ function renderQuests() {
     action.appendChild(document.createElement("span"));
     action.appendChild(button);
     card.appendChild(action);
+  caTasks.forEach((task) => {
+    const completed = state.completedTasks.has(task.id);
+    if (!showCompleted && completed) return;
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card__title">
+        <span class="tag tag--${task.tier}">${task.tier}</span>
+        <span>${task.name}</span>
+      </div>
+      <div class="card__description">${task.description}</div>
+      <div class="card__footer">
+        <div class="card__meta">
+          <span class="badge">${formatPoints(task.points)}</span>
+          <span class="badge">${completed ? "Completed" : "Not done"}</span>
+        </div>
+        <button class="button button--primary" ${completed ? "disabled" : ""}>
+          ${completed ? "Claimed" : "Complete task"}
+        </button>
+      </div>
+    `;
+
+    const btn = card.querySelector("button");
+    btn.addEventListener("click", () => completeTask(task));
+
+    caListEl.appendChild(card);
+  });
+}
+
+function renderSkills() {
+  skillsEl.innerHTML = "";
+  const available = getAvailablePoints();
+  const nextCost = getNextSkillCost();
+
+  const unlockedDisplay = document.createElement("div");
+  unlockedDisplay.className = "card";
+  unlockedDisplay.innerHTML = `
+    <div class="card__title">Unlocked skills</div>
+    <div class="card__description">${Array.from(state.unlockedSkills).sort().join(", ")}</div>
+    <div class="progress"><div class="progress__bar" style="width:${
+      (state.unlockedSkills.size / (skillPool.length + defaultUnlockedSkills.size)) * 100
+    }%"></div></div>
+  `;
+
+  skillsEl.appendChild(unlockedDisplay);
+
+  const list = document.createElement("div");
+  list.className = "list";
+
+  skillPool.forEach((skill) => {
+    const unlocked = state.unlockedSkills.has(skill);
+    const cost = nextCost;
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card__title">${skill}</div>
+      <div class="card__meta">
+        <span class="badge">Next skill cost: ${cost} pts</span>
+        <span class="badge">${unlocked ? "Unlocked" : "Locked"}</span>
+      </div>
+      <div class="card__footer">
+        <div class="card__description">${
+          unlocked
+            ? "Ready to train and interact with your adventure."
+            : "Spend Combat Achievement points to permanently unlock this skill."
+        }</div>
+        <button class="button button--primary" ${
+          unlocked || available < cost ? "disabled" : ""
+        }>Unlock</button>
+      </div>
+    `;
+
+    const btn = card.querySelector("button");
+    btn.addEventListener("click", () => unlockSkill(skill));
+    list.appendChild(card);
+  });
+
+  skillsEl.appendChild(list);
+}
+
+function renderQuests() {
+  questsEl.innerHTML = "";
+  const available = getAvailablePoints();
+
+  questPool.forEach((quest) => {
+    const unlocked = state.unlockedQuests.has(quest.name);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card__title">${quest.name}</div>
+      <div class="card__meta">
+        <span class="badge">${formatPoints(quest.points)}</span>
+        <span class="badge">${quest.region}</span>
+      </div>
+      <div class="card__footer">
+        <div class="card__description">${
+          unlocked
+            ? "Quest unlocked. Story progression awaits!"
+            : "Unlock to access quest rewards, areas, and additional NPCs."
+        }</div>
+        <button class="button button--primary" ${
+          unlocked || available < quest.points ? "disabled" : ""
+        }>${unlocked ? "Unlocked" : "Unlock quest"}</button>
+      </div>
+    `;
+
+    card.querySelector("button").addEventListener("click", () => unlockQuest(quest));
     questsEl.appendChild(card);
   });
 }
@@ -346,6 +479,25 @@ function renderShops() {
     action.appendChild(document.createElement("span"));
     action.appendChild(button);
     card.appendChild(action);
+  shopsEl.innerHTML = "";
+  const available = getAvailablePoints();
+
+  shopPool.forEach((shop) => {
+    const unlocked = state.unlockedShops.has(shop.name);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card__title">${shop.name}</div>
+      <div class="card__description">${shop.description}</div>
+      <div class="card__footer">
+        <span class="badge">Cost: 1 pt</span>
+        <button class="button button--primary" ${
+          unlocked || available < 1 ? "disabled" : ""
+        }>${unlocked ? "Unlocked" : "Unlock"}</button>
+      </div>
+    `;
+
+    card.querySelector("button").addEventListener("click", () => unlockShop(shop));
     shopsEl.appendChild(card);
   });
 }
@@ -356,6 +508,18 @@ function renderJournal() {
     const empty = document.createElement("div");
     empty.className = "log__entry";
     empty.textContent = "Journal is empty—start locking and unlocking.";
+function logEvent(text) {
+  const entry = `${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} — ${text}`;
+  state.journal.unshift(entry);
+  if (state.journal.length > 30) state.journal.pop();
+  renderJournal();
+}
+
+function renderJournal() {
+  journalEl.innerHTML = "";
+  if (!state.journal.length) {
+    const empty = document.createElement("li");
+    empty.textContent = "Complete tasks and spend points to fill your Rune Journal.";
     journalEl.appendChild(empty);
     return;
   }
@@ -398,6 +562,52 @@ function addLog(entry) {
 }
 
 function resetState() {
+  state.journal.forEach((entry) => {
+    const li = document.createElement("li");
+    li.textContent = entry;
+    journalEl.appendChild(li);
+  });
+}
+
+function completeTask(task) {
+  if (state.completedTasks.has(task.id)) return;
+  state.completedTasks.add(task.id);
+  state.pointsEarned += task.points;
+  state.caCompletions += 1;
+  logEvent(`Completed ${task.name} for ${formatPoints(task.points)}.`);
+  renderAll();
+}
+
+function unlockSkill(skill) {
+  if (state.unlockedSkills.has(skill)) return;
+  const cost = getNextSkillCost();
+  if (getAvailablePoints() < cost) return;
+  state.unlockedSkills.add(skill);
+  state.pointsSpent += cost;
+  state.purchasedSkills += 1;
+  logEvent(`Unlocked ${skill} for ${formatPoints(cost)}.`);
+  renderAll();
+}
+
+function unlockQuest(quest) {
+  if (state.unlockedQuests.has(quest.name)) return;
+  if (getAvailablePoints() < quest.points) return;
+  state.unlockedQuests.add(quest.name);
+  state.pointsSpent += quest.points;
+  logEvent(`Unlocked ${quest.name} for ${formatPoints(quest.points)}.`);
+  renderAll();
+}
+
+function unlockShop(shop) {
+  if (state.unlockedShops.has(shop.name)) return;
+  if (getAvailablePoints() < 1) return;
+  state.unlockedShops.add(shop.name);
+  state.pointsSpent += 1;
+  logEvent(`Unlocked ${shop.name} for 1 point.`);
+  renderAll();
+}
+
+function resetProgress() {
   state.pointsEarned = 0;
   state.pointsSpent = 0;
   state.caCompletions = 0;
@@ -413,6 +623,9 @@ function resetState() {
   showCompletedToggle.checked = true;
   setTierFilter("all");
   setActiveView("tasks");
+  state.journal = [];
+  showCompletedToggle.checked = true;
+  setTierFilter("all");
   addLog("Run reset. Default combat stats remain open.");
   renderAll();
   showToast("Run reset");
@@ -422,6 +635,27 @@ function showToast(message) {
   toastEl.textContent = message;
   toastEl.classList.add("toast--visible");
   setTimeout(() => toastEl.classList.remove("toast--visible"), 1600);
+  state.journal = [];
+  logEvent("Run reset. Ready for fresh combat achievements.");
+  renderAll();
+}
+
+function openModal() {
+  customPointsModal.setAttribute("aria-hidden", "false");
+}
+
+function closeModal() {
+  customPointsModal.setAttribute("aria-hidden", "true");
+}
+
+function handleCustomPoints(event) {
+  event.preventDefault();
+  const value = Number(customPointsValue.value || 0);
+  if (value <= 0) return;
+  state.pointsEarned += value;
+  logEvent(`Added ${formatPoints(value)} from real-game progress.`);
+  renderAll();
+  closeModal();
 }
 
 function renderAll() {
@@ -480,3 +714,42 @@ function setupEvents() {
 setupEvents();
 resetState();
 renderAll();
+}
+
+// Event wiring
+showCompletedToggle.addEventListener("change", (e) => {
+  state.showCompleted = e.target.checked;
+  renderTasks();
+});
+
+resetBtn.addEventListener("click", resetProgress);
+addCustomPointsBtn.addEventListener("click", openModal);
+closeModalBtn.addEventListener("click", closeModal);
+customPointsForm.addEventListener("submit", handleCustomPoints);
+clearLogBtn.addEventListener("click", () => {
+  state.journal = [];
+  renderJournal();
+});
+
+viewTabs.forEach((tab) => {
+  tab.addEventListener("click", () => setActiveView(tab.dataset.view));
+});
+
+unlockTabs.forEach((tab) => {
+  tab.addEventListener("click", () => setActiveUnlock(tab.dataset.unlock));
+});
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && customPointsModal.getAttribute("aria-hidden") === "false") {
+    closeModal();
+  }
+});
+
+// Init
+state.showCompleted = true;
+showCompletedToggle.checked = true;
+renderAll();
+setActiveView("tasks");
+setActiveUnlock("skills");
+renderAll();
+logEvent("Your Ironman starts with Attack, Strength, Defence, Hitpoints, Prayer, and Slayer.");

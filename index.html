@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Combat Achievement Ironlock</title>
+  <title>Combat Achievement Ironlock HUD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -47,6 +48,31 @@
             <p class="hint">Tap a contract to bank CA points. All controls stay within reach.</p>
           </div>
           <div class="controls">
+  <div class="frame">
+    <header class="bar">
+      <div class="bar__brand">
+        <span class="orb">🛡️</span>
+        <div>
+          <p class="eyebrow">Ironman Variant</p>
+          <h1>Combat Achievement Ironlock</h1>
+        </div>
+      </div>
+      <div class="bar__summary" id="summary"></div>
+      <div class="bar__actions">
+        <button class="button button--ghost" id="addCustomPoints">+ CA Points</button>
+        <button class="button button--primary" id="resetProgress">Reset Run</button>
+      </div>
+    </header>
+
+    <main class="hud">
+      <section class="pane pane--tasks">
+        <div class="pane__head">
+          <div>
+            <p class="eyebrow">Combat Achievements</p>
+            <h2>Task Console</h2>
+            <p class="hint">Tap a card to cash in points and progress your Ironlock.</p>
+          </div>
+          <div class="toggles">
             <label class="switch">
               <input type="checkbox" id="showCompleted" />
               <span class="slider"></span>
@@ -71,6 +97,15 @@
             <p class="eyebrow">Spend your CA bank</p>
             <h2>Unlock Console</h2>
             <p class="hint">Flip between skills, quests, and shops without leaving the shell.</p>
+        <div class="pane__body" id="caGrid"></div>
+      </section>
+
+      <section class="pane pane--unlocks">
+        <div class="pane__head">
+          <div>
+            <p class="eyebrow">Spend CA points</p>
+            <h2>Unlock Console</h2>
+            <p class="hint">Keep the world locked to your will—skills, quests, and shops await.</p>
           </div>
           <div class="segment" id="unlockTabs">
             <button class="segment__btn segment__btn--active" data-unlock="skills">Skills</button>
@@ -87,6 +122,7 @@
             <div class="pill">Costs start at 1pt and rise by +1 per skill</div>
           </div>
           <div class="grid grid--tight" id="skills"></div>
+          <div class="grid" id="skills"></div>
         </div>
 
         <div class="unlock-view hidden" data-unlock-view="quests">
@@ -95,6 +131,9 @@
             <div class="pill">Cost mirrors Quest Point reward</div>
           </div>
           <div class="grid grid--tight" id="quests"></div>
+            <div class="pill">Cost mirrors their Quest Point reward</div>
+          </div>
+          <div class="grid" id="quests"></div>
         </div>
 
         <div class="unlock-view hidden" data-unlock-view="shops">
@@ -112,6 +151,16 @@
             <p class="eyebrow">Run ledger</p>
             <h2>Rune Journal</h2>
             <p class="hint">App-like feed for quick review of your Ironlock story.</p>
+          <div class="grid" id="shops"></div>
+        </div>
+      </section>
+
+      <section class="pane pane--journal">
+        <div class="pane__head">
+          <div>
+            <p class="eyebrow">Run ledger</p>
+            <h2>Rune Journal</h2>
+            <p class="hint">Every click writes your Ironlock story.</p>
           </div>
           <div class="ledger">
             <div class="ledger__stat">
@@ -129,6 +178,7 @@
           </div>
         </div>
         <div class="journal-slab">
+        <div class="pane__body pane__body--journal">
           <div class="log" id="journal"></div>
           <div class="inline-actions">
             <button class="button button--ghost" id="clearLog">Clear journal</button>
@@ -136,6 +186,7 @@
         </div>
       </section>
     </div>
+    </main>
   </div>
 
   <div class="modal hidden" id="customPointsModal" role="dialog" aria-modal="true">
@@ -150,6 +201,196 @@
         <div class="form__actions">
           <button type="submit" class="button button--primary">Add points</button>
           <button type="button" class="button button--ghost" id="cancelModal">Cancel</button>
+  <title>Combat Achievement Ironlock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <p class="eyebrow">Ironman Variant</p>
+      <h1>Combat Achievement Ironlock</h1>
+      <p class="lede">Earn Combat Achievement points to unlock the world of Gielinor. Every completion fuels your Ironman progression into skills, quests, and shops.</p>
+      <div class="hero__stats" id="summary"></div>
+      <div class="hero__cta">
+        <button class="button button--primary" id="resetProgress">Reset Run</button>
+        <button class="button button--ghost" id="addCustomPoints">Add Custom CA Points</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="nav rail" id="viewTabs">
+      <button class="rail__item rail__item--active" data-view="tasks">
+        <span class="rail__icon">🎯</span>
+        <span>Tasks</span>
+      </button>
+      <button class="rail__item" data-view="unlocks">
+        <span class="rail__icon">🗺️</span>
+        <span>Unlocks</span>
+      </button>
+      <button class="rail__item" data-view="journal">
+        <span class="rail__icon">📜</span>
+        <span>Journal</span>
+      </button>
+    </div>
+
+    <div class="views">
+      <section class="view view--active" data-view="tasks">
+        <div class="panel">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Combat Achievements</p>
+              <h2>Task Board</h2>
+            </div>
+            <div class="panel__actions">
+              <label class="switch">
+                <input type="checkbox" id="showCompleted" />
+                <span class="slider"></span>
+                <span class="switch__label">Show completed</span>
+              </label>
+            </div>
+          </div>
+          <div class="panel__body" id="caList"></div>
+        </div>
+      </section>
+
+      <section class="view" data-view="unlocks">
+        <div class="tablist" id="unlockTabs">
+          <button class="tab tab--active" data-unlock="skills">Skills</button>
+          <button class="tab" data-unlock="quests">Quests</button>
+          <button class="tab" data-unlock="shops">Shops</button>
+        </div>
+
+        <div class="panel" data-unlock-view="skills">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Progression</p>
+              <h2>Unlock Skills</h2>
+            </div>
+            <div class="pill">Costs start at 1pt then +1 per unlock</div>
+          </div>
+          <div class="panel__body" id="skills"></div>
+        </div>
+
+        <div class="panel hidden" data-unlock-view="quests">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Lore &amp; Travel</p>
+              <h2>Quest Unlocks</h2>
+            </div>
+            <div class="pill pill--blue">Cost = Quest Point reward</div>
+          </div>
+          <div class="panel__body" id="quests"></div>
+        </div>
+
+        <div class="panel hidden" data-unlock-view="shops">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Supplies</p>
+              <h2>Shop Access</h2>
+            </div>
+            <div class="pill pill--green">1pt each</div>
+          </div>
+          <div class="panel__body" id="shops"></div>
+        </div>
+      </section>
+
+      <section class="view" data-view="journal">
+        <div class="panel panel--wide">
+          <div class="panel__header">
+            <div>
+              <p class="eyebrow">Adventure Log</p>
+              <h2>Rune Journal</h2>
+            </div>
+            <div class="panel__actions">
+              <button class="button button--ghost" id="clearLog">Clear log</button>
+            </div>
+          </div>
+          <div class="panel__body">
+            <ul class="journal" id="journal"></ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  <main class="grid">
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Combat Achievements</p>
+          <h2>Task Board</h2>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="showCompleted" />
+          <span class="slider"></span>
+          <span class="switch__label">Show completed</span>
+        </label>
+      </div>
+      <div class="panel__body" id="caList"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Progression</p>
+          <h2>Unlock Skills</h2>
+        </div>
+        <div class="pill">Costs start at 1pt then +2 per unlock</div>
+      </div>
+      <div class="panel__body" id="skills"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Lore &amp; Travel</p>
+          <h2>Quest Unlocks</h2>
+        </div>
+        <div class="pill pill--blue">Cost = Quest Point reward</div>
+      </div>
+      <div class="panel__body" id="quests"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Supplies</p>
+          <h2>Shop Access</h2>
+        </div>
+        <div class="pill pill--green">1pt each</div>
+      </div>
+      <div class="panel__body" id="shops"></div>
+    </section>
+
+    <section class="panel panel--wide">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Adventure Log</p>
+          <h2>Rune Journal</h2>
+        </div>
+        <button class="button button--ghost" id="clearLog">Clear log</button>
+      </div>
+      <div class="panel__body">
+        <ul class="journal" id="journal"></ul>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="customPointsModal" aria-hidden="true">
+    <div class="modal__dialog">
+      <h3>Grant Custom Points</h3>
+      <p>Use this when you want to mirror an in-game task with your live Ironman. Add earned CA points to keep the run in sync.</p>
+      <form id="customPointsForm">
+        <label class="field">
+          <span>Points to add</span>
+          <input type="number" id="customPointsValue" min="1" value="5" required />
+        </label>
+        <div class="modal__actions">
+          <button type="button" class="button button--ghost" id="closeModal">Cancel</button>
+          <button type="submit" class="button button--primary">Add points</button>
         </div>
       </form>
     </div>
