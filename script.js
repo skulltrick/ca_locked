@@ -70,6 +70,7 @@ const state = {
   completedTasks: new Set(),
   showCompleted: true,
   tierFilter: "all",
+  activeView: "tasks",
   journal: []
 };
 
@@ -94,6 +95,8 @@ const clearLogBtn = document.getElementById("clearLog");
 const unlockTabs = document.querySelectorAll("[data-unlock]");
 const unlockViews = document.querySelectorAll("[data-unlock-view]");
 const tierButtons = document.querySelectorAll("#tierFilter [data-tier]");
+const viewTabs = document.querySelectorAll("[data-view-target]");
+const views = document.querySelectorAll("[data-view]");
 const skillCountEl = document.getElementById("skillCount");
 const questCountEl = document.getElementById("questCount");
 const shopCountEl = document.getElementById("shopCount");
@@ -116,6 +119,16 @@ function getAvailablePoints() {
 
 function getNextSkillCost() {
   return 1 + state.purchasedSkills;
+}
+
+function setActiveView(viewName) {
+  state.activeView = viewName;
+  viewTabs.forEach((tab) => {
+    tab.classList.toggle("view-nav__btn--active", tab.dataset.viewTarget === viewName);
+  });
+  views.forEach((panel) => {
+    panel.classList.toggle("view--active", panel.dataset.view === viewName);
+  });
   return 1 + state.purchasedSkills * 2;
 }
 
@@ -605,6 +618,11 @@ function resetProgress() {
   state.completedTasks = new Set();
   state.showCompleted = true;
   state.tierFilter = "all";
+  state.activeView = "tasks";
+  state.journal = [];
+  showCompletedToggle.checked = true;
+  setTierFilter("all");
+  setActiveView("tasks");
   state.journal = [];
   showCompletedToggle.checked = true;
   setTierFilter("all");
@@ -651,6 +669,10 @@ function renderAll() {
 }
 
 function setupEvents() {
+  viewTabs.forEach((tab) => {
+    tab.addEventListener("click", () => setActiveView(tab.dataset.viewTarget));
+  });
+
   showCompletedToggle.addEventListener("change", (e) => {
     state.showCompleted = e.target.checked;
     renderTasks();

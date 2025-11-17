@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Combat Achievement Ironlock</title>
   <title>Combat Achievement Ironlock HUD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,6 +14,40 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand__orb">🛡️</span>
+        <div>
+          <p class="eyebrow">Ironman Variant</p>
+          <h1>Combat Achievement Ironlock</h1>
+          <p class="hint">Earn CA points, unlock the world, log your run.</p>
+        </div>
+      </div>
+      <div class="header__right">
+        <div class="header__summary" id="summary"></div>
+        <div class="header__actions">
+          <button class="button button--ghost" id="addCustomPoints">+ CA Points</button>
+          <button class="button button--primary" id="resetProgress">Reset Run</button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="view-nav" id="viewTabs">
+      <button class="view-nav__btn view-nav__btn--active" data-view-target="tasks">Task Board</button>
+      <button class="view-nav__btn" data-view-target="unlocks">Unlock Console</button>
+      <button class="view-nav__btn" data-view-target="journal">Rune Journal</button>
+    </nav>
+
+    <div class="workspace">
+      <section class="view view--active" data-view="tasks">
+        <div class="view__head">
+          <div>
+            <p class="eyebrow">Combat Achievements</p>
+            <h2>Task Board</h2>
+            <p class="hint">Tap a contract to bank CA points. All controls stay within reach.</p>
+          </div>
+          <div class="controls">
   <div class="frame">
     <header class="bar">
       <div class="bar__brand">
@@ -53,6 +88,15 @@
             </div>
           </div>
         </div>
+        <div class="grid" id="caGrid"></div>
+      </section>
+
+      <section class="view" data-view="unlocks">
+        <div class="view__head">
+          <div>
+            <p class="eyebrow">Spend your CA bank</p>
+            <h2>Unlock Console</h2>
+            <p class="hint">Flip between skills, quests, and shops without leaving the shell.</p>
         <div class="pane__body" id="caGrid"></div>
       </section>
 
@@ -77,12 +121,16 @@
             <h3>Skill lifts</h3>
             <div class="pill">Costs start at 1pt and rise by +1 per skill</div>
           </div>
+          <div class="grid grid--tight" id="skills"></div>
           <div class="grid" id="skills"></div>
         </div>
 
         <div class="unlock-view hidden" data-unlock-view="quests">
           <div class="pane__subhead">
             <h3>Quest gateways</h3>
+            <div class="pill">Cost mirrors Quest Point reward</div>
+          </div>
+          <div class="grid grid--tight" id="quests"></div>
             <div class="pill">Cost mirrors their Quest Point reward</div>
           </div>
           <div class="grid" id="quests"></div>
@@ -93,6 +141,16 @@
             <h3>Shop access</h3>
             <div class="pill">Each shop entry is 1pt to unlock</div>
           </div>
+          <div class="grid grid--tight" id="shops"></div>
+        </div>
+      </section>
+
+      <section class="view" data-view="journal">
+        <div class="view__head view__head--split">
+          <div>
+            <p class="eyebrow">Run ledger</p>
+            <h2>Rune Journal</h2>
+            <p class="hint">App-like feed for quick review of your Ironlock story.</p>
           <div class="grid" id="shops"></div>
         </div>
       </section>
@@ -119,6 +177,7 @@
             </div>
           </div>
         </div>
+        <div class="journal-slab">
         <div class="pane__body pane__body--journal">
           <div class="log" id="journal"></div>
           <div class="inline-actions">
@@ -126,6 +185,7 @@
           </div>
         </div>
       </section>
+    </div>
     </main>
   </div>
 
